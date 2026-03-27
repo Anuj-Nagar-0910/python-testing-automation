@@ -4,3 +4,4 @@ allure-results/
 reports/
 logs/
 .env
+.idea
