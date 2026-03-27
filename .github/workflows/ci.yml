@@ -3,7 +3,9 @@ name: Python Test Automation
 on:
   push:
     branches: [ "main" ]
-  pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   test:
@@ -28,8 +30,25 @@ jobs:
         cd demos
         pytest --alluredir=allure-results
 
-    - name: Upload Allure Results
-      uses: actions/upload-artifact@v4
+    # ✅ Install Allure CLI
+    - name: Install Allure
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y default-jre
+        wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+        tar -zxvf allure-2.27.0.tgz
+        sudo mv allure-2.27.0 /opt/allure
+        sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+    # ✅ Generate HTML report
+    - name: Generate Allure Report
+      run: |
+        cd demos
+        allure generate allure-results -o allure-report --clean
+
+    # ✅ Deploy to GitHub Pages
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
       with:
-        name: allure-results
-        path: demos/allure-results
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: demos/allure-report
