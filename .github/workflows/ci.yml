@@ -40,6 +40,19 @@ jobs:
         sudo mv allure-2.27.0 /opt/allure
         sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
+    # Download the previous reports for the trend
+    - name: Download previous report
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+
+    #Copy history and save the history
+    - name: Copy Allure History
+      run: |
+        mkdir -p demos/allure-trends/history
+        cp -r gh-pages/history/* demos/allure-trends/history || true
+
     # ✅ Generate HTML report
     - name: Generate Allure Report
       run: |
