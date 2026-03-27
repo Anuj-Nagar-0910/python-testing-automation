@@ -4,7 +4,7 @@
 
 [![Allure Report](https://img.shields.io/badge/Allure-Report-blue)](https://Anuj-Nagar-0910.github.io/python-testing-automation)
 
-[![codecov](https://codecov.io/gh/Anuj-Nagar-0910/python-testing-automation/branch/main/graph/badge.svg)](https://codecov.io/gh/Anuj-Nagar-0910/python-testing-automation)
+[![codecov](https://codecov.io/github/Anuj-Nagar-0910/python-testing-automation/graph/badge.svg?token=CRZ0RVAC3T)](https://codecov.io/github/Anuj-Nagar-0910/python-testing-automation)
 ---
 
 ## 📌 Project Overview
