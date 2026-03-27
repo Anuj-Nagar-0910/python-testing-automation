@@ -1,0 +1,2 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Mar 27 06:37:45 UTC 2026","Fri Mar 27 06:37:45 UTC 2026","102","tests","test_can","","","","test_can_message",""
