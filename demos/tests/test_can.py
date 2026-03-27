@@ -50,11 +50,13 @@
 #     logging.info("Verdict: PASS")
 
 """Reporting with Allure"""
-
 import pytest
 import logging
 import allure
+
 from ..src.can_interface import setup_can, send_message, receive_message
+from ..src.allure_helper import allure_step, attach_json, log_info
+
 
 @pytest.fixture
 def can_bus():
@@ -62,40 +64,66 @@ def can_bus():
     yield bus
     bus.shutdown()
 
+
 @allure.feature("CAN Communication")
 @allure.story("Validate CAN Message")
 @allure.severity(allure.severity_level.CRITICAL)
 def test_can_message(can_bus):
-    logging.info("===== TEST STARTED =====")
 
-    with allure.step("Prepare input data"):
-        input_msg = {"id": 0x123, "data": [1, 2, 3, 4]}
-        allure.attach(
-            str(input_msg),
-            name="Input Data",
-            attachment_type=allure.attachment_type.JSON
-        )
-        logging.info(f"Input: {input_msg}")
+    input_msg = {"id": 0x123, "data": [1, 2, 3, 4]}
 
-    with allure.step("Send CAN message"):
-        send_message(can_bus)
-        logging.info(f"Send CAN message: {can_bus}")
+    prepare_input(input_msg)
+    send_can(can_bus, input_msg)
+    msg = receive_can(can_bus)
+    validate(msg, input_msg)
 
-    with allure.step("Receive CAN message"):
-        msg = receive_message(can_bus)
-        logging.info(f"Receive CAN message: {msg}")
+@allure.story("Multiple CAN Messages")
+@pytest.mark.parametrize("input_msg", [
+    {"id": 0x100, "data": [1, 2]},
+    {"id": 0x200, "data": [3, 4]},
+    {"id": 0x300, "data": [5, 6]},
+])
+def test_multiple_messages(can_bus, input_msg):
 
-    with allure.step("Validate message"):
-        assert msg is not None
-        # assert msg.arbitration_id == input_msg["id"]
-        if msg.arbitration_id == input_msg["id"]:
-            logging.info("Verdict: PASS - arbitration_id matches")
-        else:
-            logging.error(f"Verdict: FAIL - expected {input_msg['id']}, got {msg.arbitration_id}")
-            assert False, "arbitration_id mismatch"
-        assert list(msg.data) == input_msg["data"]
-        allure.attach(
-            str(msg),
-            name="Validation Evidence",
-            attachment_type=allure.attachment_type.JSON
-        )
+    prepare_input(input_msg)
+    send_can(can_bus, input_msg)
+    msg = receive_can(can_bus)
+    validate(msg, input_msg)
+
+# ---------- STEPS (REUSABLE) ----------
+
+@allure_step("Prepare input data")
+def prepare_input(input_msg):
+    attach_json("Input Data", input_msg)
+    log_info(f"Input: {input_msg}")
+
+
+@allure_step("Send CAN message")
+def send_can(bus, input_msg):
+    send_message(bus, input_msg["id"], input_msg["data"])
+    log_info("Message sent")
+
+
+@allure_step("Receive CAN message")
+def receive_can(bus):
+    msg = receive_message(bus)
+    log_info(f"Received: {msg}")
+    return msg
+
+
+@allure_step("Validate CAN message")
+def validate(msg, expected):
+
+    assert msg is not None, "No message received"
+
+    if msg.arbitration_id == expected["id"]:
+        log_info("PASS: arbitration_id matches")
+    else:
+        log_info("FAIL: arbitration_id mismatch")
+        assert False, "arbitration_id mismatch"
+
+    assert list(msg.data) == expected["data"]
+
+    attach_json("Validation Result", {
+        "message": str(msg)
+    })
