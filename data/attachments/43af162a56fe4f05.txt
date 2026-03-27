@@ -1,5 +1,5 @@
 INFO     root:test_can.py:69 ===== TEST STARTED =====
 INFO     root:test_can.py:78 Input: {'id': 291, 'data': [1, 2, 3, 4]}
 INFO     root:test_can.py:82 Send CAN message: Virtual bus channel channel-0
-INFO     root:test_can.py:86 Receive CAN message: Timestamp: 1774593465.639474    ID: 00000123    X Tx                DL:  4    01 02 03 04                 Channel: channel-0
+INFO     root:test_can.py:86 Receive CAN message: Timestamp: 1774603008.628333    ID: 00000123    X Tx                DL:  4    01 02 03 04                 Channel: channel-0
 INFO     root:test_can.py:92 Verdict: PASS - arbitration_id matches
