@@ -28,7 +28,7 @@ jobs:
     - name: Run Pytest with Allure
       run: |
         cd demos
-        pytest --alluredir=allure-results --cov=src --cov-report=xml
+        pytest --alluredir=allure-results --cov=src --cov-report=xml || echo "pytest_failed=true" >> $GITHUB_ENV
 
     # ✅ Install Allure CLI
     - name: Install Allure
@@ -55,19 +55,26 @@ jobs:
 
     # ✅ Generate HTML report
     - name: Generate Allure Report
+      if: always()
       run: |
         cd demos
         allure generate allure-results -o allure-report --clean
 
     - name: Upload coverage to Codecov
+      if: always()
       uses: codecov/codecov-action@v4
       with:
         files: demos/covergae.xml
 
     # ✅ Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
+      if: always()
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: demos/allure-report
         keep_files: true
+
+    - name: Fail pipeline if tests failed
+      if: env.pytest_failed == 'true'
+      run: exit 1
