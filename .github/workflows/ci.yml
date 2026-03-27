@@ -50,8 +50,8 @@ jobs:
     #Copy history and save the history
     - name: Copy Allure History
       run: |
-        mkdir -p demos/allure-trends/history
-        cp -r gh-pages/history/* demos/allure-trends/history || true
+        mkdir -p demos/allure-results/history
+        cp -r gh-pages/history/* demos/allure-results/history || true
 
     # ✅ Generate HTML report
     - name: Generate Allure Report
@@ -70,3 +70,4 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: demos/allure-report
+        keep_files: true
