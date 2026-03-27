@@ -1,0 +1,4 @@
+INFO     root:allure_helper.py:27 Input: {'id': 272, 'data': [5, 64]}
+INFO     root:allure_helper.py:27 Message sent
+INFO     root:allure_helper.py:27 Received: Timestamp: 1774609136.107161    ID: 00000110    X Tx                DL:  2    05 40                       Channel: channel-0
+INFO     root:allure_helper.py:27 PASS: arbitration_id matches

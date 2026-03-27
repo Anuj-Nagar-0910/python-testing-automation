@@ -1,0 +1,1 @@
+INFO     root:allure_helper.py:27 Input: {'id': 1024, 'data': [5, 65, '0xf']}
