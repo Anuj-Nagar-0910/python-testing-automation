@@ -1,57 +1,5 @@
-# import pytest
-# import logging
-# from ..src.can_interface import setup_can, send_message, receive_message
-#
-# @pytest.fixture
-# def can_bus():
-#     bus = setup_can()
-#     yield bus
-#     bus.shutdown()
-#
-# def test_can_message(can_bus, request):
-#     logging.info("===== TEST STARTED =====")
-#
-#     # INPUT
-#     input_msg = {"id": 0x123, "data": [1, 2, 3, 4]}
-#     logging.info(f"Input: {input_msg}")
-#
-#     # EXPECTED
-#     expected = input_msg
-#     logging.info(f"Expected: {expected}")
-#
-#     # ACTION
-#     send_message(can_bus)
-#     msg = receive_message(can_bus)
-#
-#     # ACTUAL
-#     actual = None
-#     if msg:
-#         actual = {"id": msg.arbitration_id, "data": list(msg.data)}
-#
-#     logging.info(f"Actual: {actual}")
-#
-#     # 👉 Attach structured data for report
-#     request.node.test_data = {
-#         "Input": input_msg,
-#         "Expected": expected,
-#         "Actual": actual
-#     }
-#
-#     # ASSERTIONS
-#     assert msg is not None
-#     assert msg.arbitration_id == expected["id"]
-#     if msg.arbitration_id == expected["id"]:
-#         logging.info("Verdict: PASS - arbitration_id matches")
-#     else:
-#         logging.error(f"Verdict: FAIL - expected {expected['id']}, got {msg.arbitration_id}")
-#         assert False, "arbitration_id mismatch"
-#     assert list(msg.data) == expected["data"]
-#
-#     logging.info("Verdict: PASS")
-
 """Reporting with Allure"""
 import pytest
-import logging
 import allure
 
 from ..src.can_interface import setup_can, send_message, receive_message
@@ -65,23 +13,22 @@ def can_bus():
     bus.shutdown()
 
 
-@allure.feature("CAN Communication")
-@allure.story("Validate CAN Message")
-@allure.severity(allure.severity_level.CRITICAL)
-def test_can_message(can_bus):
-
-    input_msg = {"id": 0x123, "data": [1, 2, 3, 4]}
-
-    prepare_input(input_msg)
-    send_can(can_bus, input_msg)
-    msg = receive_can(can_bus)
-    validate(msg, input_msg)
-
 @allure.story("Multiple CAN Messages")
+@allure.severity(allure.severity_level.CRITICAL)
 @pytest.mark.parametrize("input_msg", [
-    {"id": 0x100, "data": [1, 2]},
+    {"id": 0x123, "data": [1, 2, 3, 4]},
     {"id": 0x200, "data": [3, 4]},
-    {"id": 0x300, "data": [5, 6]},
+    {"id": 0x300, "data": [9, 5, 6]},
+    {"id": 0x400, "data": [11, 5, 6]},
+    {"id": 0x312, "data": [5, 2, 6]},
+    {"id": 0x3C1, "data": [1, 5, 6]},
+    {"id": 0x3B2, "data": [5, 7, 6]},
+    {"id": 0x3A3, "data": [56, 6, ]},
+    {"id": 0x400, "data": [5, 65]},
+    {"id": 0x110, "data": [5, 64]},
+    {"id": 0x310, "data": [5, 36]},
+    {"id": 0x392, "data": [52, 6]},
+    {"id": 0xfff, "data": [15, 6]},
 ])
 def test_multiple_messages(can_bus, input_msg):
 
