@@ -3,3 +3,4 @@ allure-pytest
 pytest==9.0.2
 pytest_html==4.2.0
 python_can==4.6.1
+pytest-cov

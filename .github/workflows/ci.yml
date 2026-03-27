@@ -28,7 +28,7 @@ jobs:
     - name: Run Pytest with Allure
       run: |
         cd demos
-        pytest --alluredir=allure-results
+        pytest --alluredir=allure-results --cov=src --cov-report=xml
 
     # ✅ Install Allure CLI
     - name: Install Allure
@@ -45,6 +45,11 @@ jobs:
       run: |
         cd demos
         allure generate allure-results -o allure-report --clean
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: demos/covergae.xml
 
     # ✅ Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
